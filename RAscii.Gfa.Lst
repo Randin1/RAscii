@@ -1,0 +1,62 @@
+CLS
+a=0
+b=0
+a$=""
+i=0
+j=0
+RANDOMIZE
+PRINT "Ascii Random Generator 1.0 (C)2024 Randin Software"
+PRINT
+PAUSE 50
+FOR i=1 TO 256
+  GOSUB rnd
+  GOSUB chk
+  PRINT
+  PRINT CHR$(27)+"c2 ";i;" >"+CHR$(27)+"c0 ";a;" (";LEN(a$);") ";
+  a$=a$+CHR$(a)
+NEXT i
+PRINT CHR$(27);"b3";CHR$(27);"c0"
+PRINT "RAscii.Dat :Created"
+PRINT
+OPEN "O",#1,"RAscii.Dat"
+PRINT #1;a$;
+CLOSE #1
+PRINT "RAscii.Dat :Written.";
+PAUSE 50
+PRINT
+END
+PROCEDURE rnd
+res:
+  j=j+1
+  RANDOMIZE
+  a=INT(RND(0)*256)
+  IF INKEY$>"" THEN
+    END
+  ENDIF
+  IF b=a THEN
+    LET j=0
+    LET a=0
+  ENDIF
+  IF a=ASC(MID$(a$,j)) THEN
+    PRINT " ";CHR$(27)+"c1";j;" ";CHR$(27);"c3";CHR$(27);"b0";CHR$(27);"c3";a;
+    PRINT CHR$(27);"b3";CHR$(27);"c0";
+    a=INT(RND(0)*256)
+    GOSUB chk
+    LET j=-1
+  ENDIF
+  IF j<LEN(a$) THEN
+    GOSUB chk
+    GOTO res
+  ENDIF
+  j=-1
+RETURN
+PROCEDURE chk
+  FOR k=0 TO LEN(a$)
+    IF a=ASC(MID$(a$,k)) THEN
+      LET k=-1
+      RANDOMIZE
+      PRINT " <";a;"> ";
+      LET a=(INT(RND(0)*256))
+    ENDIF
+  NEXT k
+RETURN
